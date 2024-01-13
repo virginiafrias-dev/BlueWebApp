@@ -1,8 +1,8 @@
-import express from "express";
+import { Router } from "express";
 import { home, login, register } from "../controllers/auth.controller.js";
 import { body } from "express-validator";
 import { validationResultMiddle } from "../middlewares/validationResult.js";
-const router = express.Router();
+const router = Router();
 
 router.get("/", home);
 
