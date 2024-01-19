@@ -23,9 +23,24 @@ export const register = async (req, res) => {
     if (error.code === 11000) {
       return res.status(400).json({ error: "Este email ya esta registrado" });
     }
+    return res.status(500).json({ error: "Error de servidor" });
   }
 };
 
 export const login = async (req, res) => {
-  res.json({ ok: "login" });
+  try {
+    const { email, password } = req.body;
+    let user = await User.findOne({ email });
+    if (!user) return res.status(403).json({ error: "No existe este usuario" });
+
+    const respuestaPassword = await user.comparePassword(password);
+    if (!respuestaPassword)
+      return res.status(403).json({ error: "Contraseña incorrecta" });
+
+    // Generar el token JWT
+    return res.json({ ok: "login" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Error de servidor" });
+  }
 };
